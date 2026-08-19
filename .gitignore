@@ -13,6 +13,7 @@ ar-lib
 compile
 config.*
 configure
+configure~
 depcomp
 install-sh
 ltmain.sh
