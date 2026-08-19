@@ -4,9 +4,9 @@ EXTRA_DIST = LICENSE data/known_good.tsv tools/dump_neo.py tools/gendb.py \
 
 dist_doc_DATA = README
 
-AM_CPPFLAGS = -std=c99 -Wall -Wextra -I$(top_srcdir)/include
+AM_CPPFLAGS = -std=c99 -Wall -Wextra
 
-include_HEADERS = $(top_srcdir)/include/neoconv.h
+include_HEADERS = $(top_srcdir)/src/neoconv.h
 
 noinst_LTLIBRARIES = libzipio.la
 libzipio_la_SOURCES = $(top_srcdir)/src/zipio.c
@@ -48,7 +48,7 @@ libneoconv_la_LDFLAGS = -no-undefined -export-symbols-regex neoconv_ \
 libneoconv_la_LIBADD = $(top_builddir)/libzipio.la
 
 bin_PROGRAMS = neoconv
-neoconv_SOURCES = $(top_srcdir)/cli/neoconv.c
+neoconv_SOURCES = $(top_srcdir)/src/cli.c
 neoconv_LDADD = $(top_builddir)/libneoconv.la
 neoconv_LDFLAGS = -no-undefined
 
