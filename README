@@ -12,10 +12,10 @@ patch out any game code.
 
 Build
 -----
-  make            # libneoconv.a + neoconv CLI
-  make shared     # libneoconv.so (hidden visibility, 9 exported symbols)
-  make test       # API conformance + synthetic round-trip/recipe tests
-  make asan       # sanitized build
+  autoreconf -fi
+  ./configure
+  make
+  make install
 
 Embedding (frontends)
 ---------------------
