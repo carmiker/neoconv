@@ -6,7 +6,7 @@ dist_doc_DATA = README
 
 AM_CPPFLAGS = -std=c99 -Wall -Wextra
 
-include_HEADERS = $(top_srcdir)/src/neoconv.h
+pkginclude_HEADERS = $(top_srcdir)/src/neoconv.h
 
 noinst_LTLIBRARIES = libzipio.la
 libzipio_la_SOURCES = $(top_srcdir)/src/zipio.c
