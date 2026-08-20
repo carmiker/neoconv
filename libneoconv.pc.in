@@ -6,6 +6,7 @@ libdir=@libdir@
 Name: lib@PACKAGE_NAME@
 Description: MAME Neo Geo romset (.zip) to TerraOnion (.neo) converter
 URL: https://github.com/carmiker/neoconv
+@REQUIRES_PRIVATE@
 Version: @PACKAGE_VERSION@
 CFlags: -I${includedir}/@PACKAGE_NAME@
 Libs: -L${libdir} -l@PACKAGE_NAME@
