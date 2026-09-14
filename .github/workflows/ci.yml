@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y autoconf automake libtool pkg-config
+      - name: Build
+        run: |
+          autoreconf -fi
+          ./configure
+          make -j"$(nproc)"
+      - name: Smoke test
+        run: ./lithogen --list | tail -n 1
+
+  windows:
+    # Standalone Windows binary, cross-compiled with mingw-w64.  The
+    # result links only against KERNEL32.dll and msvcrt.dll.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y autoconf automake libtool pkg-config \
+            gcc-mingw-w64-x86-64
+      - name: Build
+        run: |
+          autoreconf -fi
+          ./configure --host=x86_64-w64-mingw32 --disable-shared \
+            LDFLAGS="-static"
+          make -j"$(nproc)"
+      - name: Verify standalone linkage
+        run: |
+          x86_64-w64-mingw32-objdump -p lithogen.exe | grep 'DLL Name'
+          ! x86_64-w64-mingw32-objdump -p lithogen.exe | grep 'DLL Name' \
+            | grep -viE 'kernel32|msvcrt'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lithogen-windows-x86_64
+          path: lithogen.exe
