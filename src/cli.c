@@ -14,11 +14,67 @@
 #include <string.h>
 
 #include <dirent.h>
-#include <fnmatch.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#ifdef _WIN32
+#include <direct.h>
+#define mkdir(path, mode) _mkdir(path)
+#endif
+
 #include "lithogen.h"
+
+/* Minimal glob matcher (*, ?, [set] with leading ! negation); replaces
+ * fnmatch(), which mingw-w64 does not provide.  Case-sensitive, no
+ * escape handling - romset file names never need either. */
+static int glob_match(const char *pat, const char *str)
+{
+    while (*pat) {
+        if (*pat == '*') {
+            while (*pat == '*')
+                pat++;
+            if (!*pat)
+                return 1;
+            for (; *str; str++)
+                if (glob_match(pat, str))
+                    return 1;
+            return 0;
+        } else if (*pat == '?') {
+            if (!*str)
+                return 0;
+            pat++;
+            str++;
+        } else if (*pat == '[') {
+            const char *p = pat + 1;
+            int neg = 0, hit = 0;
+            if (*p == '!' || *p == '^') {
+                neg = 1;
+                p++;
+            }
+            if (!*str)
+                return 0;
+            for (; *p && *p != ']'; p++) {
+                if (p[1] == '-' && p[2] && p[2] != ']') {
+                    if (*str >= p[0] && *str <= p[2])
+                        hit = 1;
+                    p += 2;
+                } else if (*p == *str) {
+                    hit = 1;
+                }
+            }
+            if (!*p || hit == neg)
+                return 0;
+            pat = p + 1;
+            str++;
+        } else {
+            if (*pat != *str)
+                return 0;
+            pat++;
+            str++;
+        }
+    }
+    return *str == '\0';
+}
 
 /* --------- input collection: files, directories, and glob patterns ------ */
 
@@ -64,7 +120,7 @@ static int scan_dir(inputs_t *in, const char *dir, const char *pat) {
     while ((de = readdir(d)) != NULL) {
         char path[1024];
         struct stat st;
-        if (pat ? (fnmatch(pat, de->d_name, 0) != 0)
+        if (pat ? !glob_match(pat, de->d_name)
                 : !ends_with_zip(de->d_name))
             continue;
         snprintf(path, sizeof(path), "%s/%s", dir, de->d_name);
