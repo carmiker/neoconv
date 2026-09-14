@@ -1,0 +1,61 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '[0-9]*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check version consistency
+        run: |
+          VERSION="$GITHUB_REF_NAME"
+          AC_VER=$(sed -n 's/^AC_INIT(\[lithogen\],\[\(.*\)\])/\1/p' configure.ac)
+          H_VER=$(sed -n 's/^#define LITHOGEN_VERSION "\(.*\)"/\1/p' src/lithogen.h)
+          echo "tag=$VERSION configure.ac=$AC_VER header=$H_VER"
+          if [ "$VERSION" != "$AC_VER" ] || [ "$VERSION" != "$H_VER" ]; then
+            echo "::error::tag $GITHUB_REF_NAME does not match" \
+                 "configure.ac ($AC_VER) and src/lithogen.h ($H_VER)"
+            exit 1
+          fi
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y autoconf automake libtool pkg-config \
+            gcc-mingw-w64-x86-64
+
+      - name: Source tarball (gated on distcheck)
+        run: |
+          autoreconf -fi
+          ./configure
+          make -j"$(nproc)" distcheck
+
+      - name: Windows binary
+        run: |
+          make distclean
+          ./configure --host=x86_64-w64-mingw32 --disable-shared \
+            LDFLAGS="-static"
+          make -j"$(nproc)"
+          x86_64-w64-mingw32-objdump -p lithogen.exe | grep 'DLL Name'
+          ! x86_64-w64-mingw32-objdump -p lithogen.exe | grep 'DLL Name' \
+            | grep -viE 'kernel32|msvcrt'
+          cp lithogen.exe "lithogen-${VERSION}-win64.exe"
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --title "lithogen $VERSION" \
+            --generate-notes \
+            "lithogen-${VERSION}.tar.gz" \
+            "lithogen-${VERSION}-win64.exe"
