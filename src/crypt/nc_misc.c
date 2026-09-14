@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: BSD-3-Clause
- * Ported to ISO C99 from MAME (prot_misc.cpp) for libneoconv.
+ * Ported to ISO C99 from MAME (prot_misc.cpp) for liblithogen.
  * Original copyright-holders: S. Smith, David Haywood, Fabio Priuli
  * and the MAME development team.  This file is a mechanical translation;
  * algorithms and tables are reproduced from the MAME source.
@@ -9,7 +9,7 @@
 #include <string.h>
 #include "crypt.h"
 
-void neoconv_cx_decrypt(uint8_t*sprrom, uint32_t sprrom_size)
+void lithogen_cx_decrypt(uint8_t*sprrom, uint32_t sprrom_size)
 {
 	int cx_size = sprrom_size;
 	uint8_t *rom = sprrom;
@@ -22,7 +22,7 @@ void neoconv_cx_decrypt(uint8_t*sprrom, uint32_t sprrom_size)
 free(buf);
 	}
 
-void neoconv_sx_decrypt(uint8_t* fixed, uint32_t fixed_size, int value)
+void lithogen_sx_decrypt(uint8_t* fixed, uint32_t fixed_size, int value)
 {
 	int sx_size = fixed_size;
 	uint8_t *rom = fixed;
@@ -46,7 +46,7 @@ void neoconv_sx_decrypt(uint8_t* fixed, uint32_t fixed_size, int value)
 	}
 }
 
-void neoconv_kof97oro_px_decode(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_kof97oro_px_decode(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	uint16_t *tmp = (uint16_t *)calloc((size_t)(0x500000), sizeof(uint16_t)); 
 	uint16_t *src = (uint16_t*)cpurom;
@@ -58,7 +58,7 @@ void neoconv_kof97oro_px_decode(uint8_t* cpurom, uint32_t cpurom_size)
 free(tmp);
 	}
 
-void neoconv_kf10thep_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_kf10thep_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	uint16_t *rom = (uint16_t*)cpurom;
 	uint16_t *buf = (uint16_t *)calloc((size_t)(0x100000/2), sizeof(uint16_t)); 
@@ -86,7 +86,7 @@ void neoconv_kf10thep_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 free(buf);
 	}
 
-void neoconv_kf2k5uni_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_kf2k5uni_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	uint8_t *src = cpurom;
 	uint8_t dst[0x80];
@@ -104,7 +104,7 @@ void neoconv_kf2k5uni_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 	memcpy(src, src + 0x600000, 0x100000); // Seems to be the same as kof10th
 }
 
-void neoconv_kf2k5uni_sx_decrypt(uint8_t* fixedrom, uint32_t fixedrom_size)
+void lithogen_kf2k5uni_sx_decrypt(uint8_t* fixedrom, uint32_t fixedrom_size)
 {
 	uint8_t *srom = fixedrom;
 
@@ -112,7 +112,7 @@ void neoconv_kf2k5uni_sx_decrypt(uint8_t* fixedrom, uint32_t fixedrom_size)
 		srom[i] = nc_bitswap(srom[i], 8, 4, 5, 6, 7, 0, 1, 2, 3);
 }
 
-void neoconv_kf2k5uni_mx_decrypt(uint8_t* audiorom, uint32_t audiorom_size)
+void lithogen_kf2k5uni_mx_decrypt(uint8_t* audiorom, uint32_t audiorom_size)
 {
 	uint8_t *mrom = audiorom;
 
@@ -120,7 +120,7 @@ void neoconv_kf2k5uni_mx_decrypt(uint8_t* audiorom, uint32_t audiorom_size)
 		mrom[i] = nc_bitswap(mrom[i], 8, 4, 5, 6, 7, 0, 1, 2, 3);
 }
 
-void neoconv_decrypt_kof2k4se_68k(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_decrypt_kof2k4se_68k(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	uint8_t *src = cpurom + 0x100000;
 	uint8_t *dst = (uint8_t *)calloc((size_t)(0x400000), sizeof(uint8_t)); 
@@ -132,14 +132,14 @@ void neoconv_decrypt_kof2k4se_68k(uint8_t* cpurom, uint32_t cpurom_size)
 free(dst);
 	}
 
-void neoconv_lans2004_vx_decrypt(uint8_t* ymsndrom, uint32_t ymsndrom_size)
+void lithogen_lans2004_vx_decrypt(uint8_t* ymsndrom, uint32_t ymsndrom_size)
 {
 	uint8_t *rom = ymsndrom;
 	for (int i = 0; i < 0xA00000; i++)
 		rom[i] = nc_bitswap(rom[i], 8, 0, 1, 5, 4, 3, 2, 6, 7);
 }
 
-void neoconv_lans2004_decrypt_68k(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_lans2004_decrypt_68k(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	// Descrambling P ROMs - Thanks to Razoola for the info
 	uint8_t *src = cpurom;
@@ -176,7 +176,7 @@ void neoconv_lans2004_decrypt_68k(uint8_t* cpurom, uint32_t cpurom_size)
 free(dst);
 	}
 
-void neoconv_samsho5b_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_samsho5b_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	int px_size = cpurom_size;
 	uint8_t *rom = cpurom;
@@ -200,7 +200,7 @@ void neoconv_samsho5b_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 free(buf);
 	}
 
-void neoconv_samsho5b_vx_decrypt(uint8_t* ymsndrom, uint32_t ymsndrom_size)
+void lithogen_samsho5b_vx_decrypt(uint8_t* ymsndrom, uint32_t ymsndrom_size)
 {
 	int vx_size = ymsndrom_size;
 	uint8_t *rom = ymsndrom;
@@ -209,7 +209,7 @@ void neoconv_samsho5b_vx_decrypt(uint8_t* ymsndrom, uint32_t ymsndrom_size)
 		rom[i] = nc_bitswap(rom[i], 8, 0, 1, 5, 4, 3, 2, 6, 7);
 }
 
-void neoconv_mslug5b_vx_decrypt(uint8_t* ymsndrom, uint32_t ymsndrom_size)
+void lithogen_mslug5b_vx_decrypt(uint8_t* ymsndrom, uint32_t ymsndrom_size)
 {
 	// only odd bytes are scrambled
 	int ym_size = ymsndrom_size;
@@ -218,7 +218,7 @@ void neoconv_mslug5b_vx_decrypt(uint8_t* ymsndrom, uint32_t ymsndrom_size)
 		rom[i] = nc_bitswap(rom[i], 8, 3, 2, 4, 1, 5, 0, 6, 7);
 }
 
-void neoconv_mslug5b_cx_decrypt(uint8_t* sprrom, uint32_t sprrom_size)
+void lithogen_mslug5b_cx_decrypt(uint8_t* sprrom, uint32_t sprrom_size)
 {
 	// rom a18/a19 lines are swapped
 	int cx_size = sprrom_size;
@@ -235,7 +235,7 @@ void neoconv_mslug5b_cx_decrypt(uint8_t* sprrom, uint32_t sprrom_size)
 free(buf);
 	}
 
-void neoconv_kog_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_kog_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	// the protection chip does some *very* strange things to the rom
 	uint8_t *src = cpurom;
@@ -295,7 +295,7 @@ void neoconv_kog_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 free(dst);
 	}
 
-void neoconv_svcboot_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_svcboot_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	static const uint8_t sec[] = { 0x06, 0x07, 0x01, 0x02, 0x03, 0x04, 0x05, 0x00 };
 	int size = cpurom_size;
@@ -314,7 +314,7 @@ void neoconv_svcboot_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 free(dst);
 	}
 
-void neoconv_svcboot_cx_decrypt(uint8_t* sprrom, uint32_t sprrom_size)
+void lithogen_svcboot_cx_decrypt(uint8_t* sprrom, uint32_t sprrom_size)
 {
 	static const uint8_t idx_tbl[ 0x10 ] = { 0, 1, 0, 1, 2, 3, 2, 3, 3, 4, 3, 4, 4, 5, 4, 5, };
 	static const uint8_t bitswap4_tbl[ 6 ][ 4 ] = {
@@ -344,7 +344,7 @@ void neoconv_svcboot_cx_decrypt(uint8_t* sprrom, uint32_t sprrom_size)
 free(dst);
 	}
 
-void neoconv_svcplus_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_svcplus_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	static const int sec[] = { 0x00, 0x03, 0x02, 0x05, 0x04, 0x01 };
 	int size = cpurom_size;
@@ -368,14 +368,14 @@ void neoconv_svcplus_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 free(dst);
 	}
 
-void neoconv_svcplus_px_hack(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_svcplus_px_hack(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	/* patched by the protection chip? */
 	uint16_t *mem16 = (uint16_t *)cpurom;
 	mem16[0x0f8016/2] = 0x33c1;
 }
 
-void neoconv_svcplusa_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_svcplusa_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	static const int sec[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x00 };
 	int size = cpurom_size;
@@ -388,7 +388,7 @@ void neoconv_svcplusa_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 free(dst);
 	}
 
-void neoconv_svcsplus_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_svcsplus_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	static const int sec[] = { 0x06, 0x07, 0x01, 0x02, 0x03, 0x04, 0x05, 0x00 };
 	int size = cpurom_size;
@@ -408,7 +408,7 @@ void neoconv_svcsplus_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 free(dst);
 	}
 
-void neoconv_svcsplus_px_hack(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_svcsplus_px_hack(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	/* patched by the protection chip? */
 	uint16_t *mem16 = (uint16_t *)cpurom;
@@ -419,7 +419,7 @@ void neoconv_svcsplus_px_hack(uint8_t* cpurom, uint32_t cpurom_size)
 	mem16[0xa110/2] = 0x9750;
 }
 
-void neoconv_kof2002b_gfx_decrypt(uint8_t *src, int size)
+void lithogen_kof2002b_gfx_decrypt(uint8_t *src, int size)
 {
 	static const uint8_t t[8][6] =
 	{
@@ -449,7 +449,7 @@ void neoconv_kof2002b_gfx_decrypt(uint8_t *src, int size)
 free(dst);
 	}
 
-void neoconv_kf2k2mp_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_kf2k2mp_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	uint8_t *src = cpurom;
 	uint8_t dst[0x80];
@@ -467,7 +467,7 @@ void neoconv_kf2k2mp_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 	}
 }
 
-void neoconv_kf2k2mp2_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_kf2k2mp2_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	uint8_t *src = cpurom;
 	uint8_t *dst = (uint8_t *)calloc((size_t)(0x600000), sizeof(uint8_t)); 
@@ -480,7 +480,7 @@ void neoconv_kf2k2mp2_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 free(dst);
 	}
 
-void neoconv_kof10th_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_kof10th_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	uint8_t *dst = (uint8_t *)calloc((size_t)(0x900000), sizeof(uint8_t)); 
 	uint8_t *src = cpurom;

@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: BSD-3-Clause
- * Ported to ISO C99 from MAME (prot_cmc.cpp) for libneoconv.
+ * Ported to ISO C99 from MAME (prot_cmc.cpp) for liblithogen.
  * Original copyright-holders: S. Smith, David Haywood, Fabio Priuli
  * and the MAME development team.  This file is a mechanical translation;
  * algorithms and tables are reproduced from the MAME source.
@@ -495,7 +495,7 @@ static void gfx_decrypt(uint8_t* rom, uint32_t rom_size, int extra_xor)
 free(buf);
 	}
 
-void neoconv_cmc42_gfx_decrypt(uint8_t* rom, uint32_t rom_size, int extra_xor)
+void lithogen_cmc42_gfx_decrypt(uint8_t* rom, uint32_t rom_size, int extra_xor)
 {
 	type0_t03 =          kof99_type0_t03;
 	type0_t12 =          kof99_type0_t12;
@@ -509,7 +509,7 @@ void neoconv_cmc42_gfx_decrypt(uint8_t* rom, uint32_t rom_size, int extra_xor)
 	gfx_decrypt(rom, rom_size, extra_xor);
 }
 
-void neoconv_cmc50_gfx_decrypt(uint8_t* rom, uint32_t rom_size, int extra_xor)
+void lithogen_cmc50_gfx_decrypt(uint8_t* rom, uint32_t rom_size, int extra_xor)
 {
 	type0_t03 =          kof2000_type0_t03;
 	type0_t12 =          kof2000_type0_t12;
@@ -523,7 +523,7 @@ void neoconv_cmc50_gfx_decrypt(uint8_t* rom, uint32_t rom_size, int extra_xor)
 	gfx_decrypt(rom, rom_size, extra_xor);
 }
 
-void neoconv_sfix_decrypt(uint8_t* rom, uint32_t rom_size, uint8_t* fixed, uint32_t fixed_size)
+void lithogen_sfix_decrypt(uint8_t* rom, uint32_t rom_size, uint8_t* fixed, uint32_t fixed_size)
 {
 	int tx_size = fixed_size;
 	uint8_t *src = rom + rom_size - tx_size;
@@ -562,7 +562,7 @@ static int m1_address_scramble(int address, uint16_t key)
 	return (block << 16) | aux;
 }
 
-void neoconv_cmc50_m1_decrypt(uint8_t* romcrypt, uint32_t romcrypt_size, uint8_t* romaudio, uint32_t romaudio_size)
+void lithogen_cmc50_m1_decrypt(uint8_t* romcrypt, uint32_t romcrypt_size, uint8_t* romaudio, uint32_t romaudio_size)
 {
 	uint8_t* rom = romcrypt;
 	size_t rom_size = 0x80000;

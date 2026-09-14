@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: BSD-3-Clause
- * Ported to ISO C99 from MAME (prot_cthd.cpp) for libneoconv.
+ * Ported to ISO C99 from MAME (prot_cthd.cpp) for liblithogen.
  * Original copyright-holders: S. Smith, David Haywood, Fabio Priuli
  * and the MAME development team.  This file is a mechanical translation;
  * algorithms and tables are reproduced from the MAME source.
@@ -66,7 +66,7 @@ static void cthd2003_c(uint8_t* sprrom, uint32_t sprrom_size, int pow)
 		gfx_address_fix(sprrom, sprrom_size, i * 512, i * 512 + 512);
 }
 
-void neoconv_decrypt_cthd2003(uint8_t* sprrom, uint32_t sprrom_size, uint8_t* audiorom, uint32_t audiorom_size, uint8_t* fixedrom, uint32_t fixedrom_size)
+void lithogen_decrypt_cthd2003(uint8_t* sprrom, uint32_t sprrom_size, uint8_t* audiorom, uint32_t audiorom_size, uint8_t* fixedrom, uint32_t fixedrom_size)
 {
 	uint8_t *romdata = fixedrom;
 	uint8_t *tmp = (uint8_t *)calloc((size_t)(8 * 128 * 128), sizeof(uint8_t)); 
@@ -90,7 +90,7 @@ void neoconv_decrypt_cthd2003(uint8_t* sprrom, uint32_t sprrom_size, uint8_t* au
 free(tmp);
 	}
 
-void neoconv_patch_cthd2003(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_patch_cthd2003(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	// patches thanks to razoola
 	uint16_t *mem16 = (uint16_t *)cpurom;
@@ -151,7 +151,7 @@ static void ct2k3sp_sx_decrypt( uint8_t* fixedrom, uint32_t fixedrom_size )
 free(buf);
 	}
 
-void neoconv_decrypt_ct2k3sp(uint8_t* sprrom, uint32_t sprrom_size, uint8_t* audiorom, uint32_t audiorom_size, uint8_t* fixedrom, uint32_t fixedrom_size)
+void lithogen_decrypt_ct2k3sp(uint8_t* sprrom, uint32_t sprrom_size, uint8_t* audiorom, uint32_t audiorom_size, uint8_t* fixedrom, uint32_t fixedrom_size)
 {
 	uint8_t *romdata = audiorom + 0x10000;
 	uint8_t *tmp = (uint8_t *)calloc((size_t)(8 * 128 * 128), sizeof(uint8_t)); 
@@ -167,7 +167,7 @@ void neoconv_decrypt_ct2k3sp(uint8_t* sprrom, uint32_t sprrom_size, uint8_t* aud
 free(tmp);
 	}
 
-void neoconv_decrypt_ct2k3sa(uint8_t* sprrom, uint32_t sprrom_size, uint8_t* audiorom, uint32_t audiorom_size )
+void lithogen_decrypt_ct2k3sa(uint8_t* sprrom, uint32_t sprrom_size, uint8_t* audiorom, uint32_t audiorom_size )
 {
 	uint8_t *romdata = audiorom + 0x10000;
 	uint8_t *tmp = (uint8_t *)calloc((size_t)(8 * 128 * 128), sizeof(uint8_t)); 
@@ -182,7 +182,7 @@ void neoconv_decrypt_ct2k3sa(uint8_t* sprrom, uint32_t sprrom_size, uint8_t* aud
 free(tmp);
 	}
 
-void neoconv_patch_ct2k3sa(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_patch_ct2k3sa(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	/* patches thanks to razoola - same as for cthd2003*/
 	uint16_t *mem16 = (uint16_t *)cpurom;
@@ -217,7 +217,7 @@ void neoconv_patch_ct2k3sa(uint8_t* cpurom, uint32_t cpurom_size)
 	mem16[0x9943e/2] = 0xdd03;
 }
 
-void neoconv_matrimbl_decrypt(uint8_t* sprrom, uint32_t sprrom_size, uint8_t* audiorom, uint32_t audiorom_size)
+void lithogen_matrimbl_decrypt(uint8_t* sprrom, uint32_t sprrom_size, uint8_t* audiorom, uint32_t audiorom_size)
 {
 	// decrypt Z80
 	uint8_t *rom = audiorom + 0x10000;

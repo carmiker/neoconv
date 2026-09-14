@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: BSD-3-Clause
- * libneoconv - cart decryption recipes.
+ * liblithogen - cart decryption recipes.
  *
  * Each recipe mirrors, call for call, the decrypt_all() sequence of the
  * corresponding MAME cart-slot device (MAME src/devices/bus/neogeo/),
@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "neoconv_internal.h"
+#include "lithogen_internal.h"
 #include "crypt/crypt.h"
 
 /* GFX keys, as in MAME prot_cmc.h */
@@ -53,44 +53,44 @@ typedef void (*recipe_fn)(nc_regions *r);
 static void rc_rom(nc_regions *r) { (void)r; }
 
 /* ----- kof98 --------------------------------------------------------------*/
-static void rc_kof98(nc_regions *r) { neoconv_kof98_decrypt_68k(P); }
+static void rc_kof98(nc_regions *r) { lithogen_kof98_decrypt_68k(P); }
 
 /* ----- SMA carts ----------------------------------------------------------*/
 static void rc_sma_kof99(nc_regions *r) {
-    neoconv_kof99_decrypt_68k(PBASE);
-    neoconv_cmc42_gfx_decrypt(C, KOF99_GFX_KEY);
-    neoconv_sfix_decrypt(C, S);
+    lithogen_kof99_decrypt_68k(PBASE);
+    lithogen_cmc42_gfx_decrypt(C, KOF99_GFX_KEY);
+    lithogen_sfix_decrypt(C, S);
 }
 static void rc_sma_garou(nc_regions *r) {
-    neoconv_garou_decrypt_68k(PBASE);
-    neoconv_cmc42_gfx_decrypt(C, GAROU_GFX_KEY);
-    neoconv_sfix_decrypt(C, S);
+    lithogen_garou_decrypt_68k(PBASE);
+    lithogen_cmc42_gfx_decrypt(C, GAROU_GFX_KEY);
+    lithogen_sfix_decrypt(C, S);
 }
 static void rc_sma_garouh(nc_regions *r) {
-    neoconv_garouh_decrypt_68k(PBASE);
-    neoconv_cmc42_gfx_decrypt(C, GAROU_GFX_KEY);
-    neoconv_sfix_decrypt(C, S);
+    lithogen_garouh_decrypt_68k(PBASE);
+    lithogen_cmc42_gfx_decrypt(C, GAROU_GFX_KEY);
+    lithogen_sfix_decrypt(C, S);
 }
 static void rc_sma_mslug3(nc_regions *r) {
-    neoconv_mslug3_decrypt_68k(PBASE);
-    neoconv_cmc42_gfx_decrypt(C, MSLUG3_GFX_KEY);
-    neoconv_sfix_decrypt(C, S);
+    lithogen_mslug3_decrypt_68k(PBASE);
+    lithogen_cmc42_gfx_decrypt(C, MSLUG3_GFX_KEY);
+    lithogen_sfix_decrypt(C, S);
 }
 static void rc_sma_mslug3a(nc_regions *r) {
-    neoconv_mslug3a_decrypt_68k(PBASE);
-    neoconv_cmc42_gfx_decrypt(C, MSLUG3_GFX_KEY);
-    neoconv_sfix_decrypt(C, S);
+    lithogen_mslug3a_decrypt_68k(PBASE);
+    lithogen_cmc42_gfx_decrypt(C, MSLUG3_GFX_KEY);
+    lithogen_sfix_decrypt(C, S);
 }
 static void rc_sma_kof2k(nc_regions *r) {
-    neoconv_kof2000_decrypt_68k(PBASE);
-    neoconv_cmc50_m1_decrypt(MX, M);
-    neoconv_cmc50_gfx_decrypt(C, KOF2000_GFX_KEY);
-    neoconv_sfix_decrypt(C, S);
+    lithogen_kof2000_decrypt_68k(PBASE);
+    lithogen_cmc50_m1_decrypt(MX, M);
+    lithogen_cmc50_gfx_decrypt(C, KOF2000_GFX_KEY);
+    lithogen_sfix_decrypt(C, S);
 }
 
 /* ----- CMC42 --------------------------------------------------------------*/
 #define CMC42(nm, key) static void rc_cmc42_##nm(nc_regions *r) { \
-    neoconv_cmc42_gfx_decrypt(C, key); neoconv_sfix_decrypt(C, S); }
+    lithogen_cmc42_gfx_decrypt(C, key); lithogen_sfix_decrypt(C, S); }
 CMC42(zupapa,   ZUPAPA_GFX_KEY)
 CMC42(mslug3h,  MSLUG3_GFX_KEY)
 CMC42(ganryu,   GANRYU_GFX_KEY)
@@ -103,161 +103,161 @@ CMC42(kof99k,   KOF99_GFX_KEY)
 
 /* ----- CMC50 --------------------------------------------------------------*/
 #define CMC50(nm, key) static void rc_cmc50_##nm(nc_regions *r) { \
-    neoconv_cmc50_m1_decrypt(MX, M); \
-    neoconv_cmc50_gfx_decrypt(C, key); neoconv_sfix_decrypt(C, S); }
+    lithogen_cmc50_m1_decrypt(MX, M); \
+    lithogen_cmc50_gfx_decrypt(C, key); lithogen_sfix_decrypt(C, S); }
 CMC50(kof2001,  KOF2001_GFX_KEY)
 CMC50(kof2000n, KOF2000_GFX_KEY)
 CMC50(jockeygp, JOCKEYGP_GFX_KEY)
 
 /* ----- NEO-PCM2 (1999) ----------------------------------------------------*/
 static void rc_pcm2_mslug4(nc_regions *r) {
-    neoconv_cmc50_m1_decrypt(MX, M);
-    neoconv_cmc50_gfx_decrypt(C, MSLUG4_GFX_KEY);
-    neoconv_sfix_decrypt(C, S);
-    neoconv_pcm2_decrypt(V1, 8);
+    lithogen_cmc50_m1_decrypt(MX, M);
+    lithogen_cmc50_gfx_decrypt(C, MSLUG4_GFX_KEY);
+    lithogen_sfix_decrypt(C, S);
+    lithogen_pcm2_decrypt(V1, 8);
 }
 static void rc_pcm2_ms4p(nc_regions *r) {
-    neoconv_cmc50_m1_decrypt(MX, M);
-    neoconv_cmc50_gfx_decrypt(C, MSLUG4_GFX_KEY);
-    neoconv_pcm2_decrypt(V1, 8);
+    lithogen_cmc50_m1_decrypt(MX, M);
+    lithogen_cmc50_gfx_decrypt(C, MSLUG4_GFX_KEY);
+    lithogen_pcm2_decrypt(V1, 8);
 }
 static void rc_pcm2_rotd(nc_regions *r) {
-    neoconv_cmc50_m1_decrypt(MX, M);
-    neoconv_cmc50_gfx_decrypt(C, ROTD_GFX_KEY);
-    neoconv_sfix_decrypt(C, S);
-    neoconv_pcm2_decrypt(V1, 16);
+    lithogen_cmc50_m1_decrypt(MX, M);
+    lithogen_cmc50_gfx_decrypt(C, ROTD_GFX_KEY);
+    lithogen_sfix_decrypt(C, S);
+    lithogen_pcm2_decrypt(V1, 16);
 }
 static void rc_pcm2_pnyaa(nc_regions *r) {
-    neoconv_cmc50_m1_decrypt(MX, M);
-    neoconv_cmc50_gfx_decrypt(C, PNYAA_GFX_KEY);
-    neoconv_sfix_decrypt(C, S);
-    neoconv_pcm2_decrypt(V1, 4);
+    lithogen_cmc50_m1_decrypt(MX, M);
+    lithogen_cmc50_gfx_decrypt(C, PNYAA_GFX_KEY);
+    lithogen_sfix_decrypt(C, S);
+    lithogen_pcm2_decrypt(V1, 4);
 }
 
 /* ----- NEO-PVC ------------------------------------------------------------*/
 static void rc_pvc_mslug5(nc_regions *r) {
-    neoconv_mslug5_decrypt_68k(P);
-    neoconv_pcm2_swap(V1, 2);
-    neoconv_cmc50_m1_decrypt(MX, M);
-    neoconv_cmc50_gfx_decrypt(C, MSLUG5_GFX_KEY);
-    neoconv_sfix_decrypt(C, S);
+    lithogen_mslug5_decrypt_68k(P);
+    lithogen_pcm2_swap(V1, 2);
+    lithogen_cmc50_m1_decrypt(MX, M);
+    lithogen_cmc50_gfx_decrypt(C, MSLUG5_GFX_KEY);
+    lithogen_sfix_decrypt(C, S);
 }
 static void rc_pvc_svc(nc_regions *r) {
-    neoconv_svc_px_decrypt(P);
-    neoconv_pcm2_swap(V1, 3);
-    neoconv_cmc50_m1_decrypt(MX, M);
-    neoconv_cmc50_gfx_decrypt(C, SVC_GFX_KEY);
-    neoconv_sfix_decrypt(C, S);
+    lithogen_svc_px_decrypt(P);
+    lithogen_pcm2_swap(V1, 3);
+    lithogen_cmc50_m1_decrypt(MX, M);
+    lithogen_cmc50_gfx_decrypt(C, SVC_GFX_KEY);
+    lithogen_sfix_decrypt(C, S);
 }
 static void rc_pvc_kf2k3(nc_regions *r) {
-    neoconv_kof2003_decrypt_68k(P);
-    neoconv_pcm2_swap(V1, 5);
-    neoconv_cmc50_m1_decrypt(MX, M);
-    neoconv_cmc50_gfx_decrypt(C, KOF2003_GFX_KEY);
-    neoconv_sfix_decrypt(C, S);
+    lithogen_kof2003_decrypt_68k(P);
+    lithogen_pcm2_swap(V1, 5);
+    lithogen_cmc50_m1_decrypt(MX, M);
+    lithogen_cmc50_gfx_decrypt(C, KOF2003_GFX_KEY);
+    lithogen_sfix_decrypt(C, S);
 }
 static void rc_pvc_kf2k3h(nc_regions *r) {
-    neoconv_kof2003h_decrypt_68k(P);
-    neoconv_pcm2_swap(V1, 5);
-    neoconv_cmc50_m1_decrypt(MX, M);
-    neoconv_cmc50_gfx_decrypt(C, KOF2003_GFX_KEY);
-    neoconv_sfix_decrypt(C, S);
+    lithogen_kof2003h_decrypt_68k(P);
+    lithogen_pcm2_swap(V1, 5);
+    lithogen_cmc50_m1_decrypt(MX, M);
+    lithogen_cmc50_gfx_decrypt(C, KOF2003_GFX_KEY);
+    lithogen_sfix_decrypt(C, S);
 }
 
 /* ----- kof2002 family -----------------------------------------------------*/
 static void rc_k2k2_kof2k2(nc_regions *r) {
-    neoconv_kof2002_decrypt_68k(P);
-    neoconv_cmc50_m1_decrypt(MX, M);
-    neoconv_cmc50_gfx_decrypt(C, KOF2002_GFX_KEY);
-    neoconv_sfix_decrypt(C, S);
-    neoconv_pcm2_swap(V1, 0);
+    lithogen_kof2002_decrypt_68k(P);
+    lithogen_cmc50_m1_decrypt(MX, M);
+    lithogen_cmc50_gfx_decrypt(C, KOF2002_GFX_KEY);
+    lithogen_sfix_decrypt(C, S);
+    lithogen_pcm2_swap(V1, 0);
 }
 static void rc_k2k2_kf2k2p(nc_regions *r) {
-    neoconv_kof2002_decrypt_68k(P);
-    neoconv_cmc50_m1_decrypt(MX, M);
-    neoconv_cmc50_gfx_decrypt(C, KOF2002_GFX_KEY);
-    neoconv_pcm2_swap(V1, 0);
+    lithogen_kof2002_decrypt_68k(P);
+    lithogen_cmc50_m1_decrypt(MX, M);
+    lithogen_cmc50_gfx_decrypt(C, KOF2002_GFX_KEY);
+    lithogen_pcm2_swap(V1, 0);
 }
 static void rc_k2k2_matrim(nc_regions *r) {
-    neoconv_matrim_decrypt_68k(P);
-    neoconv_cmc50_m1_decrypt(MX, M);
-    neoconv_cmc50_gfx_decrypt(C, MATRIM_GFX_KEY);
-    neoconv_sfix_decrypt(C, S);
-    neoconv_pcm2_swap(V1, 1);
+    lithogen_matrim_decrypt_68k(P);
+    lithogen_cmc50_m1_decrypt(MX, M);
+    lithogen_cmc50_gfx_decrypt(C, MATRIM_GFX_KEY);
+    lithogen_sfix_decrypt(C, S);
+    lithogen_pcm2_swap(V1, 1);
 }
 static void rc_k2k2_samsh5(nc_regions *r) {
-    neoconv_samsho5_decrypt_68k(P);
-    neoconv_cmc50_m1_decrypt(MX, M);
-    neoconv_cmc50_gfx_decrypt(C, SAMSHO5_GFX_KEY);
-    neoconv_sfix_decrypt(C, S);
-    neoconv_pcm2_swap(V1, 4);
+    lithogen_samsho5_decrypt_68k(P);
+    lithogen_cmc50_m1_decrypt(MX, M);
+    lithogen_cmc50_gfx_decrypt(C, SAMSHO5_GFX_KEY);
+    lithogen_sfix_decrypt(C, S);
+    lithogen_pcm2_swap(V1, 4);
 }
 static void rc_k2k2_sams5s(nc_regions *r) {
-    neoconv_samsh5sp_decrypt_68k(P);
-    neoconv_cmc50_m1_decrypt(MX, M);
-    neoconv_cmc50_gfx_decrypt(C, SAMSHO5SP_GFX_KEY);
-    neoconv_sfix_decrypt(C, S);
-    neoconv_pcm2_swap(V1, 6);
+    lithogen_samsh5sp_decrypt_68k(P);
+    lithogen_cmc50_m1_decrypt(MX, M);
+    lithogen_cmc50_gfx_decrypt(C, SAMSHO5SP_GFX_KEY);
+    lithogen_sfix_decrypt(C, S);
+    lithogen_pcm2_swap(V1, 6);
 }
 
 /* ----- bootlegs -----------------------------------------------------------*/
 static void rc_boot_cthd2k3(nc_regions *r) {
-    neoconv_decrypt_cthd2003(C, M, S);
-    neoconv_patch_cthd2003(P);
+    lithogen_decrypt_cthd2003(C, M, S);
+    lithogen_patch_cthd2003(P);
 }
 static void rc_boot_ct2k3sp(nc_regions *r) {
-    neoconv_decrypt_ct2k3sp(C, M, S);
-    neoconv_patch_cthd2003(P);
+    lithogen_decrypt_ct2k3sp(C, M, S);
+    lithogen_patch_cthd2003(P);
 }
 static void rc_boot_ct2k3sa(nc_regions *r) {
-    neoconv_decrypt_ct2k3sa(C, M);
-    neoconv_patch_ct2k3sa(P);
+    lithogen_decrypt_ct2k3sa(C, M);
+    lithogen_patch_ct2k3sa(P);
 }
 static void rc_boot_matrimbl(nc_regions *r) {
-    neoconv_matrim_decrypt_68k(P);
-    neoconv_sfix_decrypt(C, S);      /* required for text layer */
-    neoconv_matrimbl_decrypt(C, M);
+    lithogen_matrim_decrypt_68k(P);
+    lithogen_sfix_decrypt(C, S);      /* required for text layer */
+    lithogen_matrimbl_decrypt(C, M);
 }
 static void rc_boot_kf2k2b(nc_regions *r) {
-    neoconv_kof2002_decrypt_68k(P);
-    neoconv_pcm2_swap(V1, 0);
-    neoconv_cmc50_m1_decrypt(MX, M);
-    neoconv_kof2002b_gfx_decrypt(r->data[NC_REG_C], 0x4000000);
-    neoconv_kof2002b_gfx_decrypt(r->data[NC_REG_S], 0x20000);
+    lithogen_kof2002_decrypt_68k(P);
+    lithogen_pcm2_swap(V1, 0);
+    lithogen_cmc50_m1_decrypt(MX, M);
+    lithogen_kof2002b_gfx_decrypt(r->data[NC_REG_C], 0x4000000);
+    lithogen_kof2002b_gfx_decrypt(r->data[NC_REG_S], 0x20000);
 }
 static void rc_boot_kf2k2mp(nc_regions *r) {
-    neoconv_kf2k2mp_decrypt(P);
-    neoconv_pcm2_swap(V1, 0);
-    neoconv_cmc50_m1_decrypt(MX, M);
-    neoconv_sx_decrypt(S, 2);
-    neoconv_cmc50_gfx_decrypt(C, KOF2002_GFX_KEY);
+    lithogen_kf2k2mp_decrypt(P);
+    lithogen_pcm2_swap(V1, 0);
+    lithogen_cmc50_m1_decrypt(MX, M);
+    lithogen_sx_decrypt(S, 2);
+    lithogen_cmc50_gfx_decrypt(C, KOF2002_GFX_KEY);
 }
 static void rc_boot_kf2k2mp2(nc_regions *r) {
-    neoconv_kf2k2mp2_px_decrypt(P);
-    neoconv_pcm2_swap(V1, 0);
-    neoconv_cmc50_m1_decrypt(MX, M);
-    neoconv_sx_decrypt(S, 1);
-    neoconv_cmc50_gfx_decrypt(C, KOF2002_GFX_KEY);
+    lithogen_kf2k2mp2_px_decrypt(P);
+    lithogen_pcm2_swap(V1, 0);
+    lithogen_cmc50_m1_decrypt(MX, M);
+    lithogen_sx_decrypt(S, 1);
+    lithogen_cmc50_gfx_decrypt(C, KOF2002_GFX_KEY);
 }
 static void rc_boot_kf2k3bl(nc_regions *r) {
-    neoconv_cmc50_gfx_decrypt(C, KOF2003_GFX_KEY);
-    neoconv_pcm2_swap(V1, 5);
-    neoconv_sx_decrypt(S, 1);
+    lithogen_cmc50_gfx_decrypt(C, KOF2003_GFX_KEY);
+    lithogen_pcm2_swap(V1, 5);
+    lithogen_sx_decrypt(S, 1);
 }
 static void rc_boot_kf2k3pl(nc_regions *r) {
-    neoconv_cmc50_gfx_decrypt(C, KOF2003_GFX_KEY);
-    neoconv_pcm2_swap(V1, 5);
-    neoconv_kf2k3pl_px_decrypt(P);
-    neoconv_sx_decrypt(S, 1);
+    lithogen_cmc50_gfx_decrypt(C, KOF2003_GFX_KEY);
+    lithogen_pcm2_swap(V1, 5);
+    lithogen_kf2k3pl_px_decrypt(P);
+    lithogen_sx_decrypt(S, 1);
 }
 static void rc_boot_kf2k3upl(nc_regions *r) {
-    neoconv_cmc50_gfx_decrypt(C, KOF2003_GFX_KEY);
-    neoconv_pcm2_swap(V1, 5);
-    neoconv_kf2k3upl_px_decrypt(P);
-    neoconv_sx_decrypt(S, 2);
+    lithogen_cmc50_gfx_decrypt(C, KOF2003_GFX_KEY);
+    lithogen_pcm2_swap(V1, 5);
+    lithogen_kf2k3upl_px_decrypt(P);
+    lithogen_sx_decrypt(S, 2);
 }
 static void rc_boot_kf10th(nc_regions *r) {
-    neoconv_kof10th_decrypt(P);
+    lithogen_kof10th_decrypt(P);
     /* MAME's 0x40000 fixed region is a runtime banking window; the FIX
      * data is generated dynamically from P by the consumer's board
      * emulation.  Ship a standard empty 128K S. */
@@ -265,57 +265,57 @@ static void rc_boot_kf10th(nc_regions *r) {
         r->size[NC_REG_S] = 0x20000;
 }
 static void rc_boot_garoubl(nc_regions *r) {
-    neoconv_sx_decrypt(S, 2);
-    neoconv_cx_decrypt(C);
+    lithogen_sx_decrypt(S, 2);
+    lithogen_cx_decrypt(C);
 }
 static void rc_boot_kof97oro(nc_regions *r) {
-    neoconv_kof97oro_px_decode(P);
-    neoconv_sx_decrypt(S, 1);
-    neoconv_cx_decrypt(C);
+    lithogen_kof97oro_px_decode(P);
+    lithogen_sx_decrypt(S, 1);
+    lithogen_cx_decrypt(C);
 }
 static void rc_boot_kf10thep(nc_regions *r) {
-    neoconv_kf10thep_px_decrypt(P);
-    neoconv_sx_decrypt(S, 1);
+    lithogen_kf10thep_px_decrypt(P);
+    lithogen_sx_decrypt(S, 1);
 }
 static void rc_boot_kf2k5uni(nc_regions *r) {
-    neoconv_kf2k5uni_px_decrypt(P);
-    neoconv_kf2k5uni_sx_decrypt(S);
-    neoconv_kf2k5uni_mx_decrypt(M);
+    lithogen_kf2k5uni_px_decrypt(P);
+    lithogen_kf2k5uni_sx_decrypt(S);
+    lithogen_kf2k5uni_mx_decrypt(M);
 }
 static void rc_boot_kf2k4se(nc_regions *r) {
-    neoconv_decrypt_kof2k4se_68k(P);
+    lithogen_decrypt_kof2k4se_68k(P);
 }
 static void rc_boot_lans2004(nc_regions *r) {
-    neoconv_lans2004_decrypt_68k(P);
-    neoconv_lans2004_vx_decrypt(V1);
-    neoconv_sx_decrypt(S, 1);
-    neoconv_cx_decrypt(C);
+    lithogen_lans2004_decrypt_68k(P);
+    lithogen_lans2004_vx_decrypt(V1);
+    lithogen_sx_decrypt(S, 1);
+    lithogen_cx_decrypt(C);
 }
 static void rc_boot_samsho5b(nc_regions *r) {
-    neoconv_samsho5b_px_decrypt(P);
-    neoconv_samsho5b_vx_decrypt(V1);
-    neoconv_sx_decrypt(S, 1);
-    neoconv_cx_decrypt(C);
+    lithogen_samsho5b_px_decrypt(P);
+    lithogen_samsho5b_vx_decrypt(V1);
+    lithogen_sx_decrypt(S, 1);
+    lithogen_cx_decrypt(C);
 }
 static void rc_boot_mslug3b6(nc_regions *r) {
-    neoconv_sx_decrypt(S, 2);
-    neoconv_cmc42_gfx_decrypt(C, MSLUG3_GFX_KEY);
+    lithogen_sx_decrypt(S, 2);
+    lithogen_cmc42_gfx_decrypt(C, MSLUG3_GFX_KEY);
 }
 static void rc_boot_ms5plus(nc_regions *r) {
-    neoconv_cmc50_m1_decrypt(MX, M);
-    neoconv_cmc50_gfx_decrypt(C, MSLUG5_GFX_KEY);
-    neoconv_pcm2_swap(V1, 2);
-    neoconv_sx_decrypt(S, 1);
+    lithogen_cmc50_m1_decrypt(MX, M);
+    lithogen_cmc50_gfx_decrypt(C, MSLUG5_GFX_KEY);
+    lithogen_pcm2_swap(V1, 2);
+    lithogen_sx_decrypt(S, 1);
 }
 static void rc_boot_mslug5b(nc_regions *r) {
-    neoconv_mslug5b_vx_decrypt(V1);
-    neoconv_sx_decrypt(S, 2);
-    neoconv_mslug5b_cx_decrypt(C);
+    lithogen_mslug5b_vx_decrypt(V1);
+    lithogen_sx_decrypt(S, 2);
+    lithogen_mslug5b_cx_decrypt(C);
 }
 static void rc_boot_kog(nc_regions *r) {
-    neoconv_kog_px_decrypt(P);
-    neoconv_sx_decrypt(S, 1);
-    neoconv_cx_decrypt(C);
+    lithogen_kog_px_decrypt(P);
+    lithogen_sx_decrypt(S, 1);
+    lithogen_cx_decrypt(C);
 }
 
 /* boot_svc M regions arrive in MAME's Z80 address-space arrangement
@@ -331,28 +331,28 @@ static void svc_m1_fileimage(nc_regions *r) {
 }
 static void rc_boot_svcboot(nc_regions *r) {
     svc_m1_fileimage(r);
-    neoconv_svcboot_px_decrypt(P);
-    neoconv_svcboot_cx_decrypt(C);
+    lithogen_svcboot_px_decrypt(P);
+    lithogen_svcboot_cx_decrypt(C);
 }
 static void rc_boot_svcplus(nc_regions *r) {
     svc_m1_fileimage(r);
-    neoconv_svcplus_px_decrypt(P);
-    neoconv_svcboot_cx_decrypt(C);
-    neoconv_sx_decrypt(S, 1);
-    neoconv_svcplus_px_hack(P);
+    lithogen_svcplus_px_decrypt(P);
+    lithogen_svcboot_cx_decrypt(C);
+    lithogen_sx_decrypt(S, 1);
+    lithogen_svcplus_px_hack(P);
 }
 static void rc_boot_svcplusa(nc_regions *r) {
     svc_m1_fileimage(r);
-    neoconv_svcplusa_px_decrypt(P);
-    neoconv_svcboot_cx_decrypt(C);
-    neoconv_svcplus_px_hack(P);
+    lithogen_svcplusa_px_decrypt(P);
+    lithogen_svcboot_cx_decrypt(C);
+    lithogen_svcplus_px_hack(P);
 }
 static void rc_boot_svcsplus(nc_regions *r) {
     svc_m1_fileimage(r);
-    neoconv_svcsplus_px_decrypt(P);
-    neoconv_sx_decrypt(S, 2);
-    neoconv_svcboot_cx_decrypt(C);
-    neoconv_svcsplus_px_hack(P);
+    lithogen_svcsplus_px_decrypt(P);
+    lithogen_sx_decrypt(S, 2);
+    lithogen_svcboot_cx_decrypt(C);
+    lithogen_svcsplus_px_hack(P);
 }
 static void rc_boot_sbp(nc_regions *r) {
     /* MAME sbp.cpp patches a word at 0x1200 at init; like kof10th's
@@ -442,9 +442,9 @@ int nc_recipe_apply(const char *cart, nc_regions *r, char *err)
     for (i = 0; i < sizeof(recipes) / sizeof(recipes[0]); i++) {
         if (!strcmp(recipes[i].slug, cart)) {
             recipes[i].fn(r);
-            return NEOCONV_OK;
+            return LITHOGEN_OK;
         }
     }
-    snprintf(err, NEOCONV_ERRSTR_MAX, "unsupported cart type: %s", cart);
-    return NEOCONV_ERR_RECIPE;
+    snprintf(err, LITHOGEN_ERRSTR_MAX, "unsupported cart type: %s", cart);
+    return LITHOGEN_ERR_RECIPE;
 }

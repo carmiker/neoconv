@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: BSD-3-Clause
- * Ported to ISO C99 from MAME (prot_pcm2.cpp) for libneoconv.
+ * Ported to ISO C99 from MAME (prot_pcm2.cpp) for liblithogen.
  * Original copyright-holders: S. Smith, David Haywood, Fabio Priuli
  * and the MAME development team.  This file is a mechanical translation;
  * algorithms and tables are reproduced from the MAME source.
@@ -9,7 +9,7 @@
 #include <string.h>
 #include "crypt.h"
 
-void neoconv_pcm2_decrypt(uint8_t* ymrom, uint32_t ymsize, int value)
+void lithogen_pcm2_decrypt(uint8_t* ymrom, uint32_t ymsize, int value)
 {
 	// thanks to Elsemi for the NEO-PCM2 info
 	uint16_t *rom = (uint16_t *)ymrom;
@@ -32,7 +32,7 @@ void neoconv_pcm2_decrypt(uint8_t* ymrom, uint32_t ymsize, int value)
 	}
 }
 
-void neoconv_pcm2_swap(uint8_t* ymrom, uint32_t ymsize, int value)
+void lithogen_pcm2_swap(uint8_t* ymrom, uint32_t ymsize, int value)
 {
 	static const uint32_t addrs[7][2]={
 		{0x000000,0xa5000},

@@ -1,7 +1,7 @@
 AC_PREREQ([2.69])
-AC_INIT([neoconv],[0.1.0])
+AC_INIT([lithogen],[0.1.0])
 AC_CONFIG_AUX_DIR([.])
-AC_CONFIG_SRCDIR([src/neoconv.c])
+AC_CONFIG_SRCDIR([src/lithogen.c])
 AM_INIT_AUTOMAKE([foreign -Wall subdir-objects])
 
 AC_PROG_CC
@@ -22,5 +22,5 @@ AS_IF([test "x$HAVE_MINIZ" = "x1"],
 	[AC_SUBST([REQUIRES_PRIVATE], ['Requires.private:'])])
 AM_CONDITIONAL([HAVE_MINIZ],[test "x$HAVE_MINIZ" = "x1"])
 
-AC_CONFIG_FILES([libneoconv.pc Makefile])
+AC_CONFIG_FILES([liblithogen.pc Makefile])
 AC_OUTPUT

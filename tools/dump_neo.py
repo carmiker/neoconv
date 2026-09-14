@@ -10,7 +10,7 @@ One tab-separated line per file:
 Directories are scanned (non-recursively) for *.neo.  Output is sorted by
 filename so runs diff cleanly.  Feed the output of a known-good set back
 into tools/gen_meta.py to populate src/meta_db.c (genre/screenshot per
-set for libneoconv's .neo writer).
+set for liblithogen's .neo writer).
 """
 import hashlib
 import os

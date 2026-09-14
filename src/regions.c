@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: BSD-3-Clause
- * libneoconv - region construction.
+ * liblithogen - region construction.
  *
  * Replicates MAME's romload semantics (see MAME src/emu/romload.cpp):
  *   1. copy phase: each load writes `group` bytes at a time (reversed
@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "neoconv_internal.h"
+#include "lithogen_internal.h"
 
 static int region_index(const nc_game *g, nc_region_kind kind)
 {
@@ -60,7 +60,7 @@ static void copy_groups(uint8_t *dst, uint32_t dstoff, uint32_t dstsize,
 }
 
 int nc_regions_build(const nc_game *g, nc_zipset *zs, nc_regions *r,
-                     const neoconv_options *opt, neoconv_report *rep)
+                     const lithogen_options *opt, lithogen_report *rep)
 {
     int ri;
 
@@ -104,8 +104,8 @@ int nc_regions_build(const nc_game *g, nc_zipset *zs, nc_regions *r,
             alloc = 0x90000;
         buf = (uint8_t *)malloc(alloc ? alloc : 1);
         if (!buf) {
-            snprintf(rep->errstr, NEOCONV_ERRSTR_MAX, "out of memory");
-            return NEOCONV_ERR_NOMEM;
+            snprintf(rep->errstr, LITHOGEN_ERRSTR_MAX, "out of memory");
+            return LITHOGEN_ERR_NOMEM;
         }
         memset(buf, reg->erasefill, alloc);
         r->data[reg->kind] = buf;
@@ -140,10 +140,10 @@ int nc_regions_build(const nc_game *g, nc_zipset *zs, nc_regions *r,
                         curfile = NULL;
                         break;
                     }
-                    snprintf(rep->errstr, NEOCONV_ERRSTR_MAX,
+                    snprintf(rep->errstr, LITHOGEN_ERRSTR_MAX,
                              "missing ROM: %s (crc %08x) for set %s",
                              ld->file, ld->crc, g->name);
-                    return NEOCONV_ERR_MISSING_ROM;
+                    return LITHOGEN_ERR_MISSING_ROM;
                 }
                 curfile = ld->file;
                 flen = got;
@@ -153,10 +153,10 @@ int nc_regions_build(const nc_game *g, nc_zipset *zs, nc_regions *r,
                     nc_warn(opt, "%s: crc %08x, expected %08x",
                             ld->file, gotcrc, ld->crc);
                     if (opt->strict_crc) {
-                        snprintf(rep->errstr, NEOCONV_ERRSTR_MAX,
+                        snprintf(rep->errstr, LITHOGEN_ERRSTR_MAX,
                                  "CRC mismatch on %s", ld->file);
                         free(fdata);
-                        return NEOCONV_ERR_CRC;
+                        return LITHOGEN_ERR_CRC;
                     }
                 }
                 if (flen < ld->length)
@@ -176,9 +176,9 @@ int nc_regions_build(const nc_game *g, nc_zipset *zs, nc_regions *r,
             case NC_CONTINUE: {
                 uint32_t n = ld->length;
                 if (!curfile || !fdata) {
-                    snprintf(rep->errstr, NEOCONV_ERRSTR_MAX,
+                    snprintf(rep->errstr, LITHOGEN_ERRSTR_MAX,
                              "ROM_CONTINUE without file in %s", g->name);
-                    return NEOCONV_ERR_ARGS;
+                    return LITHOGEN_ERR_ARGS;
                 }
                 if (fpos + n > flen)
                     n = (uint32_t)(flen > fpos ? flen - fpos : 0);
@@ -224,9 +224,9 @@ int nc_regions_build(const nc_game *g, nc_zipset *zs, nc_regions *r,
                 if (sk == NC_REG_COUNT || !r->data[sk] ||
                     ld->crc + ld->length > r->size[sk] ||
                     ld->offset + ld->length > reg->size) {
-                    snprintf(rep->errstr, NEOCONV_ERRSTR_MAX,
+                    snprintf(rep->errstr, LITHOGEN_ERRSTR_MAX,
                              "bad ROM_COPY in %s", g->name);
-                    return NEOCONV_ERR_ARGS;
+                    return LITHOGEN_ERR_ARGS;
                 }
                 memcpy(buf + ld->offset, r->data[sk] + ld->crc, ld->length);
                 TRACK_P(ld->offset + ld->length);
@@ -323,7 +323,7 @@ int nc_regions_build(const nc_game *g, nc_zipset *zs, nc_regions *r,
             p[i + 1] = t;
         }
     }
-    return NEOCONV_OK;
+    return LITHOGEN_OK;
 }
 
 void nc_regions_free(nc_regions *r)

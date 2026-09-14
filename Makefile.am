@@ -6,7 +6,7 @@ dist_doc_DATA = README
 
 AM_CPPFLAGS = -std=c99 -Wall -Wextra
 
-pkginclude_HEADERS = $(top_srcdir)/src/neoconv.h
+pkginclude_HEADERS = $(top_srcdir)/src/lithogen.h
 
 noinst_LTLIBRARIES = libzipio.la
 libzipio_la_SOURCES = $(top_srcdir)/src/zipio.c
@@ -23,8 +23,8 @@ libminiz_la_SOURCES = \
 	$(top_srcdir)/miniz/miniz.h
 endif
 
-lib_LTLIBRARIES = libneoconv.la
-libneoconv_la_SOURCES = \
+lib_LTLIBRARIES = liblithogen.la
+liblithogen_la_SOURCES = \
 	$(top_srcdir)/src/crypt/crypt.h \
 	$(top_srcdir)/src/crypt/crypt_protos.h \
 	$(top_srcdir)/src/crypt/nc_cmc.c \
@@ -38,19 +38,19 @@ libneoconv_la_SOURCES = \
 	$(top_srcdir)/src/crypt/nc_sma.c \
 	$(top_srcdir)/src/games_db.c \
 	$(top_srcdir)/src/meta_db.c \
-	$(top_srcdir)/src/neoconv.c \
-	$(top_srcdir)/src/neoconv_internal.h \
+	$(top_srcdir)/src/lithogen.c \
+	$(top_srcdir)/src/lithogen_internal.h \
 	$(top_srcdir)/src/neowrite.c \
 	$(top_srcdir)/src/recipes.c \
 	$(top_srcdir)/src/regions.c
-libneoconv_la_LDFLAGS = -no-undefined -export-symbols-regex neoconv_ \
+liblithogen_la_LDFLAGS = -no-undefined -export-symbols-regex lithogen_ \
 	-version-info 0:0:0
-libneoconv_la_LIBADD = $(top_builddir)/libzipio.la
+liblithogen_la_LIBADD = $(top_builddir)/libzipio.la
 
-bin_PROGRAMS = neoconv
-neoconv_SOURCES = $(top_srcdir)/src/cli.c
-neoconv_LDADD = $(top_builddir)/libneoconv.la
-neoconv_LDFLAGS = -no-undefined
+bin_PROGRAMS = lithogen
+lithogen_SOURCES = $(top_srcdir)/src/cli.c
+lithogen_LDADD = $(top_builddir)/liblithogen.la
+lithogen_LDFLAGS = -no-undefined
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = lib$(PACKAGE).pc

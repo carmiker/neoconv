@@ -66,7 +66,7 @@ FILES = {
 }
 
 HEADER = """/* SPDX-License-Identifier: BSD-3-Clause
- * Ported to ISO C99 from MAME ({src}) for libneoconv.
+ * Ported to ISO C99 from MAME ({src}) for liblithogen.
  * Original copyright-holders: S. Smith, David Haywood, Fabio Priuli
  * and the MAME development team.  This file is a mechanical translation;
  * algorithms and tables are reproduced from the MAME source.
@@ -186,24 +186,24 @@ for fname, spec in FILES.items():
         newname = rename.get(name, name)
         args = m.group("args")
         ret = m.group("ret").replace("static ", "")
-        sig = "%s %s(%s)" % (ret, ("neoconv_" + newname) if exported else newname, args)
+        sig = "%s %s(%s)" % (ret, ("lithogen_" + newname) if exported else newname, args)
         code = c99ify(sig + "\n" + body)
         code = add_frees(code)
         if not exported:
             code = "static " + code
         else:
-            protos.append(sig.replace("neoconv_" + newname, "neoconv_" + newname) + ";")
+            protos.append(sig.replace("lithogen_" + newname, "lithogen_" + newname) + ";")
         out_parts.append(code + "\n\n")
 
     # rewrite intra-file calls to renamed/exported functions
     text = "".join(out_parts)
     for name in spec["export"]:
-        newname = "neoconv_" + rename.get(name, name)
+        newname = "lithogen_" + rename.get(name, name)
         # call sites: plain "name(" not already prefixed and not the definition
         text = re.sub(r"(?<![a-z0-9_])%s\(" % re.escape(name),
                       newname + "(", text)
         # fix the definition line (was double-prefixed by the sub above? no:
-        # definition already uses neoconv_ name so the regex can't match it)
+        # definition already uses lithogen_ name so the regex can't match it)
     outname = fname.replace(".cpp", ".c").replace("prot_", "nc_")
     (OUT / outname).write_text(text)
     print("wrote", OUT / outname, len(text), "bytes")

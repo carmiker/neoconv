@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: BSD-3-Clause
- * libneoconv - .neo serialization.
+ * liblithogen - .neo serialization.
  *
  * Layout (TerraOnion NeoSD; cross-checked against Geolith geo_neo.c):
  *   0x000  'N' 'E' 'O' 0x01
@@ -19,7 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "neoconv_internal.h"
+#include "lithogen_internal.h"
 
 static void put32(uint8_t *p, uint32_t v)
 {
@@ -35,7 +35,7 @@ static int wr(FILE *f, const void *data, size_t len)
 }
 
 int nc_neo_write(const nc_game *g, const nc_regions *r,
-                 const neoconv_options *opt, const char *outpath,
+                 const lithogen_options *opt, const char *outpath,
                  uint32_t *out_ngh, char *err)
 {
     uint8_t hdr[4096];
@@ -126,8 +126,8 @@ int nc_neo_write(const nc_game *g, const nc_regions *r,
 
     f = fopen(outpath, "wb");
     if (!f) {
-        snprintf(err, NEOCONV_ERRSTR_MAX, "cannot open output: %s", outpath);
-        return NEOCONV_ERR_IO;
+        snprintf(err, LITHOGEN_ERRSTR_MAX, "cannot open output: %s", outpath);
+        return LITHOGEN_ERR_IO;
     }
     if (!wr(f, hdr, sizeof(hdr)) ||
         !wr(f, r->data[NC_REG_P],  psz) ||
@@ -136,14 +136,14 @@ int nc_neo_write(const nc_game *g, const nc_regions *r,
         !wr(f, r->data[NC_REG_V1], r->size[NC_REG_V1]) ||
         !wr(f, r->data[NC_REG_V2], r->size[NC_REG_V2]) ||
         !wr(f, r->data[NC_REG_C],  r->size[NC_REG_C])) {
-        snprintf(err, NEOCONV_ERRSTR_MAX, "write failure: %s", outpath);
+        snprintf(err, LITHOGEN_ERRSTR_MAX, "write failure: %s", outpath);
         fclose(f);
         remove(outpath);
-        return NEOCONV_ERR_IO;
+        return LITHOGEN_ERR_IO;
     }
     if (fclose(f) != 0) {
-        snprintf(err, NEOCONV_ERRSTR_MAX, "close failure: %s", outpath);
-        return NEOCONV_ERR_IO;
+        snprintf(err, LITHOGEN_ERRSTR_MAX, "close failure: %s", outpath);
+        return LITHOGEN_ERR_IO;
     }
-    return NEOCONV_OK;
+    return LITHOGEN_OK;
 }

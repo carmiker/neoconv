@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: BSD-3-Clause
- * libneoconv - convert MAME-layout Neo Geo romsets (.zip) to TerraOnion
+ * liblithogen - convert MAME-layout Neo Geo romsets (.zip) to TerraOnion
  * .neo format, decrypting/descrambling static ROM data as required.
  *
  * ROM layout data and decryption algorithms are derived from the MAME
@@ -14,15 +14,15 @@
  *  - The library writes nothing to stdout/stderr when a log callback is
  *    set; without one, warnings go to stderr (CLI behavior).
  *  - Conversions must be serialized: the decryption code (ported from
- *    MAME) keeps translation-unit state, so concurrent neoconv_convert
+ *    MAME) keeps translation-unit state, so concurrent lithogen_convert
  *    calls from multiple threads are not supported.  Any single thread,
  *    including a worker thread, is fine.
  *  - File paths are passed to fopen() as-is.  On POSIX systems UTF-8
  *    paths work naturally; Windows frontends should convert paths to
  *    the active code page or add a wide-char I/O layer.
  */
-#ifndef NEOCONV_H
-#define NEOCONV_H
+#ifndef LITHOGEN_H
+#define LITHOGEN_H
 
 #include <stddef.h>
 #include <stdint.h>
@@ -31,48 +31,48 @@
 extern "C" {
 #endif
 
-#if defined _WIN32 && defined NEOCONV_SHARED
- #ifdef NEOCONV_BUILD
-  #define NEOCONV_API __declspec(dllexport)
+#if defined _WIN32 && defined LITHOGEN_SHARED
+ #ifdef LITHOGEN_BUILD
+  #define LITHOGEN_API __declspec(dllexport)
  #else
-  #define NEOCONV_API __declspec(dllimport)
+  #define LITHOGEN_API __declspec(dllimport)
  #endif
-#elif defined __GNUC__ && defined NEOCONV_SHARED
- #define NEOCONV_API __attribute__((visibility("default")))
+#elif defined __GNUC__ && defined LITHOGEN_SHARED
+ #define LITHOGEN_API __attribute__((visibility("default")))
 #else
- #define NEOCONV_API
+ #define LITHOGEN_API
 #endif
 
-#define NEOCONV_VERSION "0.1.0"
-/* Bumped whenever the API grows; query at runtime via neoconv_api_version. */
-#define NEOCONV_API_VERSION 2
-#define NEOCONV_ERRSTR_MAX 256
+#define LITHOGEN_VERSION "0.1.0"
+/* Bumped whenever the API grows; query at runtime via lithogen_api_version. */
+#define LITHOGEN_API_VERSION 2
+#define LITHOGEN_ERRSTR_MAX 256
 
 typedef enum {
-    NEOCONV_OK = 0,
-    NEOCONV_ERR_ARGS,        /* bad arguments                            */
-    NEOCONV_ERR_ZIP,         /* cannot open/read zip archive             */
-    NEOCONV_ERR_UNKNOWN_SET, /* zip name does not match a known set      */
-    NEOCONV_ERR_MISSING_ROM, /* a required ROM file was not found        */
-    NEOCONV_ERR_CRC,         /* CRC mismatch in strict mode              */
-    NEOCONV_ERR_RECIPE,      /* unsupported cart type                    */
-    NEOCONV_ERR_IO,          /* output I/O failure                       */
-    NEOCONV_ERR_NOMEM
-} neoconv_status;
+    LITHOGEN_OK = 0,
+    LITHOGEN_ERR_ARGS,        /* bad arguments                            */
+    LITHOGEN_ERR_ZIP,         /* cannot open/read zip archive             */
+    LITHOGEN_ERR_UNKNOWN_SET, /* zip name does not match a known set      */
+    LITHOGEN_ERR_MISSING_ROM, /* a required ROM file was not found        */
+    LITHOGEN_ERR_CRC,         /* CRC mismatch in strict mode              */
+    LITHOGEN_ERR_RECIPE,      /* unsupported cart type                    */
+    LITHOGEN_ERR_IO,          /* output I/O failure                       */
+    LITHOGEN_ERR_NOMEM
+} lithogen_status;
 
 typedef enum {
-    NEOCONV_LOG_WARN = 0     /* recoverable oddities: CRC mismatch, size
+    LITHOGEN_LOG_WARN = 0     /* recoverable oddities: CRC mismatch, size
                                 disagreement with the reference set,
                                 optional ROM absent, NGH cross-check     */
-} neoconv_log_level;
+} lithogen_log_level;
 
 /* Receives one complete message per event, without a trailing newline.
- * Called from within neoconv_convert, on the caller's thread. */
-typedef void (*neoconv_log_fn)(neoconv_log_level level, const char *msg,
+ * Called from within lithogen_convert, on the caller's thread. */
+typedef void (*lithogen_log_fn)(lithogen_log_level level, const char *msg,
                                void *user);
 
 typedef struct {
-    /* Set by neoconv_options_init; lets the library detect callers built
+    /* Set by lithogen_options_init; lets the library detect callers built
      * against older struct layouts if fields are appended later. */
     size_t struct_size;
 
@@ -91,7 +91,7 @@ typedef struct {
      * but do not decrypt or write the output file. */
     int dry_run;
     /* Warnings are delivered here when set; stderr otherwise. */
-    neoconv_log_fn log;
+    lithogen_log_fn log;
     void *log_user;
 
     /* Header metadata overrides; 0/NULL = derive automatically (from
@@ -102,14 +102,14 @@ typedef struct {
     uint32_t screenshot;
     const char *name_override;
     const char *manufacturer_override;
-} neoconv_options;
+} lithogen_options;
 
 typedef struct {
-    char errstr[NEOCONV_ERRSTR_MAX];
+    char errstr[LITHOGEN_ERRSTR_MAX];
     unsigned crc_mismatches;
     unsigned missing_optional;   /* optional/NO_DUMP entries skipped     */
     uint32_t ngh;                /* NGH written to the header            */
-} neoconv_report;
+} lithogen_report;
 
 /* Descriptive record for one supported set. */
 typedef struct {
@@ -125,36 +125,36 @@ typedef struct {
     unsigned screenshot;         /* NeoSD screenshot id                  */
     uint32_t ngh;                /* 0 when only known post-conversion    */
     int in_reference;            /* covered by the known-good table      */
-} neoconv_game_desc;
+} lithogen_game_desc;
 
-NEOCONV_API int neoconv_api_version(void);
-NEOCONV_API const char *neoconv_version(void);
+LITHOGEN_API int lithogen_api_version(void);
+LITHOGEN_API const char *lithogen_version(void);
 
 /* Initialize options to defaults.  Always call this before setting
  * individual fields; it future-proofs against struct growth. */
-NEOCONV_API void neoconv_options_init(neoconv_options *opt);
+LITHOGEN_API void lithogen_options_init(lithogen_options *opt);
 
 /* Convert one romset zip to a .neo file (or validate it: see dry_run).
  * out_path may be NULL when dry_run is set. */
-NEOCONV_API neoconv_status neoconv_convert(const char *zip_path,
+LITHOGEN_API lithogen_status lithogen_convert(const char *zip_path,
                                            const char *out_path,
-                                           const neoconv_options *opt,
-                                           neoconv_report *rep);
+                                           const lithogen_options *opt,
+                                           lithogen_report *rep);
 
 /* Database queries. */
-NEOCONV_API size_t neoconv_game_count(void);
-NEOCONV_API int neoconv_game_desc_get(size_t index, neoconv_game_desc *desc);
-NEOCONV_API int neoconv_find_game(const char *set_name);   /* -1: unknown */
+LITHOGEN_API size_t lithogen_game_count(void);
+LITHOGEN_API int lithogen_game_desc_get(size_t index, lithogen_game_desc *desc);
+LITHOGEN_API int lithogen_find_game(const char *set_name);   /* -1: unknown */
 
-/* Backwards-compatible field query (superseded by neoconv_game_desc_get). */
-NEOCONV_API int neoconv_game_info(size_t index, const char **name,
+/* Backwards-compatible field query (superseded by lithogen_game_desc_get). */
+LITHOGEN_API int lithogen_game_info(size_t index, const char **name,
                                   const char **parent, const char **fullname,
                                   const char **manufacturer, unsigned *year);
 
-NEOCONV_API const char *neoconv_status_str(neoconv_status s);
+LITHOGEN_API const char *lithogen_status_str(lithogen_status s);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* NEOCONV_H */
+#endif /* LITHOGEN_H */

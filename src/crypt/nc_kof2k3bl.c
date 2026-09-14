@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: BSD-3-Clause
- * Ported to ISO C99 from MAME (prot_kof2k3bl.cpp) for libneoconv.
+ * Ported to ISO C99 from MAME (prot_kof2k3bl.cpp) for liblithogen.
  * Original copyright-holders: S. Smith, David Haywood, Fabio Priuli
  * and the MAME development team.  This file is a mechanical translation;
  * algorithms and tables are reproduced from the MAME source.
@@ -11,7 +11,7 @@
 
 static uint16_t m_overlay; /* runtime member; value re-read by protection sim */
 
-void neoconv_kf2k3pl_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_kf2k3pl_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	uint16_t *tmp = (uint16_t *)calloc((size_t)(0x100000/2), sizeof(uint16_t)); 
 	uint16_t*rom16 = (uint16_t*)cpurom;
@@ -30,7 +30,7 @@ void neoconv_kf2k3pl_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 free(tmp);
 	}
 
-void neoconv_kf2k3upl_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_kf2k3upl_px_decrypt(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	uint8_t *src = cpurom;
 	memmove(src + 0x100000, src, 0x600000);

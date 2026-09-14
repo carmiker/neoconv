@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: BSD-3-Clause
- * libneoconv - zip archive input (miniz backend).
+ * liblithogen - zip archive input (miniz backend).
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,7 +7,7 @@
 #include <ctype.h>
 
 #include "miniz.h"
-#include "neoconv_internal.h"
+#include "lithogen_internal.h"
 
 struct nc_zipset {
     mz_zip_archive *zips;
@@ -41,7 +41,7 @@ nc_zipset *nc_zipset_open(const char *const *paths, size_t npaths, char *err)
     }
     for (i = 0; i < npaths; i++) {
         if (!mz_zip_reader_init_file(&zs->zips[i], paths[i], 0)) {
-            snprintf(err, NEOCONV_ERRSTR_MAX, "cannot open zip: %s", paths[i]);
+            snprintf(err, LITHOGEN_ERRSTR_MAX, "cannot open zip: %s", paths[i]);
             zs->n = i;
             nc_zipset_close(zs);
             return NULL;

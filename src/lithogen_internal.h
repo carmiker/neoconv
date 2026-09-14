@@ -1,14 +1,14 @@
 /* SPDX-License-Identifier: BSD-3-Clause
- * libneoconv - internal definitions.
+ * liblithogen - internal definitions.
  * Game data derived from the MAME project (BSD-3-Clause).
  */
-#ifndef NEOCONV_INTERNAL_H
-#define NEOCONV_INTERNAL_H
+#ifndef LITHOGEN_INTERNAL_H
+#define LITHOGEN_INTERNAL_H
 
 #include <stddef.h>
 #include <stdint.h>
 
-#include "neoconv.h"
+#include "lithogen.h"
 
 /* ------------------------------------------------------------- database -- */
 
@@ -66,7 +66,7 @@ typedef struct {
 } nc_game;
 
 /* route a warning to the caller's log callback or stderr */
-void nc_warn(const neoconv_options *opt, const char *fmt, ...);
+void nc_warn(const lithogen_options *opt, const char *fmt, ...);
 
 extern const nc_game nc_games[];
 extern const size_t nc_num_games;
@@ -124,10 +124,10 @@ typedef struct {
 } nc_regions;
 
 void nc_apply_meta_sizes(const nc_game *g, nc_regions *r,
-                         const neoconv_options *opt);
+                         const lithogen_options *opt);
 
 int nc_regions_build(const nc_game *g, nc_zipset *zs, nc_regions *r,
-                     const neoconv_options *opt, neoconv_report *rep);
+                     const lithogen_options *opt, lithogen_report *rep);
 void nc_regions_free(nc_regions *r);
 
 /* ------------------------------------------------------------- recipes --- */
@@ -140,8 +140,8 @@ int nc_recipe_known(const char *cart);
 /* --------------------------------------------------------------- writer -- */
 
 int nc_neo_write(const nc_game *g, const nc_regions *r,
-                 const neoconv_options *opt, const char *outpath,
+                 const lithogen_options *opt, const char *outpath,
                  uint32_t *out_ngh, char *err);
 const nc_meta *nc_meta_find(const char *set_name);
 
-#endif /* NEOCONV_INTERNAL_H */
+#endif /* LITHOGEN_INTERNAL_H */

@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: BSD-3-Clause
- * Ported to ISO C99 from MAME (prot_sma.cpp) for libneoconv.
+ * Ported to ISO C99 from MAME (prot_sma.cpp) for liblithogen.
  * Original copyright-holders: S. Smith, David Haywood, Fabio Priuli
  * and the MAME development team.  This file is a mechanical translation;
  * algorithms and tables are reproduced from the MAME source.
@@ -9,7 +9,7 @@
 #include <string.h>
 #include "crypt.h"
 
-void neoconv_kof99_decrypt_68k(uint8_t* base)
+void lithogen_kof99_decrypt_68k(uint8_t* base)
 {
 	uint16_t *rom = (uint16_t *)(base + 0x100000);
 
@@ -32,7 +32,7 @@ void neoconv_kof99_decrypt_68k(uint8_t* base)
 		rom[i] = rom[0x700000/2 + nc_bitswap(i, 19,18,11,6,14,17,16,5,8,10,12,0,4,3,2,7,9,15,13,1)];
 }
 
-void neoconv_garou_decrypt_68k(uint8_t* base)
+void lithogen_garou_decrypt_68k(uint8_t* base)
 {
 	uint16_t *rom = (uint16_t *)(base + 0x100000);
 
@@ -56,7 +56,7 @@ void neoconv_garou_decrypt_68k(uint8_t* base)
 	}
 }
 
-void neoconv_garouh_decrypt_68k(uint8_t* base)
+void lithogen_garouh_decrypt_68k(uint8_t* base)
 {
 	uint16_t *rom = (uint16_t *)(base + 0x100000);
 
@@ -80,7 +80,7 @@ void neoconv_garouh_decrypt_68k(uint8_t* base)
 	}
 }
 
-void neoconv_mslug3_decrypt_68k(uint8_t* base)
+void lithogen_mslug3_decrypt_68k(uint8_t* base)
 {
 	uint16_t *rom = (uint16_t *)(base + 0x100000);
 
@@ -104,7 +104,7 @@ void neoconv_mslug3_decrypt_68k(uint8_t* base)
 	}
 }
 
-void neoconv_mslug3a_decrypt_68k(uint8_t* base)
+void lithogen_mslug3a_decrypt_68k(uint8_t* base)
 {
 	uint16_t *rom = (uint16_t *)(base + 0x100000);
 
@@ -128,7 +128,7 @@ void neoconv_mslug3a_decrypt_68k(uint8_t* base)
 	}
 }
 
-void neoconv_kof2000_decrypt_68k(uint8_t* base)
+void lithogen_kof2000_decrypt_68k(uint8_t* base)
 {
 	uint16_t *rom = (uint16_t *)(base + 0x100000);
 

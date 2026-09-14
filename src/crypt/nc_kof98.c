@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: BSD-3-Clause
- * Ported to ISO C99 from MAME (prot_kof98.cpp) for libneoconv.
+ * Ported to ISO C99 from MAME (prot_kof98.cpp) for liblithogen.
  * Original copyright-holders: S. Smith, David Haywood, Fabio Priuli
  * and the MAME development team.  This file is a mechanical translation;
  * algorithms and tables are reproduced from the MAME source.
@@ -11,7 +11,7 @@
 
 static uint16_t m_default_rom[2];
 
-void neoconv_kof98_decrypt_68k(uint8_t* cpurom, uint32_t cpurom_size)
+void lithogen_kof98_decrypt_68k(uint8_t* cpurom, uint32_t cpurom_size)
 {
 	uint8_t *src = cpurom;
 	uint8_t *dst = (uint8_t *)calloc((size_t)(0x200000), sizeof(uint8_t)); 

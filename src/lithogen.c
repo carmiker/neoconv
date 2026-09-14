@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: BSD-3-Clause
- * libneoconv - conversion orchestration and public API.
+ * liblithogen - conversion orchestration and public API.
  */
 #include <stdarg.h>
 #include <stdio.h>
@@ -7,27 +7,27 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "neoconv_internal.h"
+#include "lithogen_internal.h"
 
-static const neoconv_options default_opts; /* zero-initialized */
+static const lithogen_options default_opts; /* zero-initialized */
 
-int neoconv_api_version(void)
+int lithogen_api_version(void)
 {
-    return NEOCONV_API_VERSION;
+    return LITHOGEN_API_VERSION;
 }
 
-const char *neoconv_version(void)
+const char *lithogen_version(void)
 {
-    return NEOCONV_VERSION;
+    return LITHOGEN_VERSION;
 }
 
-void neoconv_options_init(neoconv_options *opt)
+void lithogen_options_init(lithogen_options *opt)
 {
     memset(opt, 0, sizeof(*opt));
     opt->struct_size = sizeof(*opt);
 }
 
-void nc_warn(const neoconv_options *opt, const char *fmt, ...)
+void nc_warn(const lithogen_options *opt, const char *fmt, ...)
 {
     char buf[512];
     va_list ap;
@@ -35,7 +35,7 @@ void nc_warn(const neoconv_options *opt, const char *fmt, ...)
     vsnprintf(buf, sizeof(buf), fmt, ap);
     va_end(ap);
     if (opt && opt->log)
-        opt->log(NEOCONV_LOG_WARN, buf, opt->log_user);
+        opt->log(LITHOGEN_LOG_WARN, buf, opt->log_user);
     else
         fprintf(stderr, "warning: %s\n", buf);
 }
@@ -104,7 +104,7 @@ const nc_meta *nc_meta_find(const char *set_name)
  * disagreements are warned, never silently adopted, since resizing
  * P/S/M/C without understanding why would corrupt layout. */
 void nc_apply_meta_sizes(const nc_game *g, nc_regions *r,
-                         const neoconv_options *opt)
+                         const lithogen_options *opt)
 {
     static const char *rn[6] = { "P", "S", "M", "V1", "V2", "C" };
     static const int rk[6] = { NC_REG_P, NC_REG_S, NC_REG_M,
@@ -196,7 +196,7 @@ void nc_apply_meta_sizes(const nc_game *g, nc_regions *r,
                     g->name, rn[i], ours[i], meta->sizes[i]);
 }
 
-int neoconv_find_game(const char *set_name)
+int lithogen_find_game(const char *set_name)
 {
     size_t i;
     for (i = 0; i < nc_num_games; i++)
@@ -205,12 +205,12 @@ int neoconv_find_game(const char *set_name)
     return -1;
 }
 
-size_t neoconv_game_count(void)
+size_t lithogen_game_count(void)
 {
     return nc_num_games;
 }
 
-int neoconv_game_desc_get(size_t index, neoconv_game_desc *desc)
+int lithogen_game_desc_get(size_t index, lithogen_game_desc *desc)
 {
     const nc_game *g;
     const nc_meta *m;
@@ -234,7 +234,7 @@ int neoconv_game_desc_get(size_t index, neoconv_game_desc *desc)
     return 1;
 }
 
-int neoconv_game_info(size_t index, const char **name, const char **parent,
+int lithogen_game_info(size_t index, const char **name, const char **parent,
                       const char **fullname, const char **manufacturer,
                       unsigned *year)
 {
@@ -248,25 +248,25 @@ int neoconv_game_info(size_t index, const char **name, const char **parent,
     return 1;
 }
 
-const char *neoconv_status_str(neoconv_status s)
+const char *lithogen_status_str(lithogen_status s)
 {
     switch (s) {
-    case NEOCONV_OK: return "success";
-    case NEOCONV_ERR_ARGS: return "invalid arguments";
-    case NEOCONV_ERR_ZIP: return "cannot open zip archive";
-    case NEOCONV_ERR_UNKNOWN_SET: return "unknown romset";
-    case NEOCONV_ERR_MISSING_ROM: return "missing ROM file";
-    case NEOCONV_ERR_CRC: return "CRC mismatch";
-    case NEOCONV_ERR_RECIPE: return "unsupported cart type";
-    case NEOCONV_ERR_IO: return "output I/O failure";
-    case NEOCONV_ERR_NOMEM: return "out of memory";
+    case LITHOGEN_OK: return "success";
+    case LITHOGEN_ERR_ARGS: return "invalid arguments";
+    case LITHOGEN_ERR_ZIP: return "cannot open zip archive";
+    case LITHOGEN_ERR_UNKNOWN_SET: return "unknown romset";
+    case LITHOGEN_ERR_MISSING_ROM: return "missing ROM file";
+    case LITHOGEN_ERR_CRC: return "CRC mismatch";
+    case LITHOGEN_ERR_RECIPE: return "unsupported cart type";
+    case LITHOGEN_ERR_IO: return "output I/O failure";
+    case LITHOGEN_ERR_NOMEM: return "out of memory";
     }
     return "unknown error";
 }
 
-neoconv_status neoconv_convert(const char *zip_path, const char *out_path,
-                               const neoconv_options *opt,
-                               neoconv_report *rep)
+lithogen_status lithogen_convert(const char *zip_path, const char *out_path,
+                               const lithogen_options *opt,
+                               lithogen_report *rep)
 {
     char setname[64];
     const char **paths = NULL;
@@ -274,10 +274,10 @@ neoconv_status neoconv_convert(const char *zip_path, const char *out_path,
     nc_regions regions;
     char *parent_zip;
     char *bios_zip;
-    neoconv_report local_rep;
+    lithogen_report local_rep;
     int gi;
     size_t npaths, i;
-    neoconv_status st;
+    lithogen_status st;
 
     if (!opt)
         opt = &default_opts;
@@ -286,8 +286,8 @@ neoconv_status neoconv_convert(const char *zip_path, const char *out_path,
     memset(rep, 0, sizeof(*rep));
 
     if (!zip_path || (!out_path && !opt->dry_run)) {
-        snprintf(rep->errstr, NEOCONV_ERRSTR_MAX, "NULL path argument");
-        return NEOCONV_ERR_ARGS;
+        snprintf(rep->errstr, LITHOGEN_ERRSTR_MAX, "NULL path argument");
+        return LITHOGEN_ERR_ARGS;
     }
 
     if (opt->set_name) {
@@ -298,18 +298,18 @@ neoconv_status neoconv_convert(const char *zip_path, const char *out_path,
             setname[i] = (char)tolower((unsigned char)setname[i]);
     }
 
-    gi = neoconv_find_game(setname);
+    gi = lithogen_find_game(setname);
     if (gi < 0) {
-        snprintf(rep->errstr, NEOCONV_ERRSTR_MAX,
+        snprintf(rep->errstr, LITHOGEN_ERRSTR_MAX,
                  "unknown romset '%s' (use --set to name one of the %zu"
                  " supported sets)", setname, nc_num_games);
-        return NEOCONV_ERR_UNKNOWN_SET;
+        return LITHOGEN_ERR_UNKNOWN_SET;
     }
 
     if (!nc_recipe_known(nc_games[gi].cart)) {
-        snprintf(rep->errstr, NEOCONV_ERRSTR_MAX,
+        snprintf(rep->errstr, LITHOGEN_ERRSTR_MAX,
                  "internal: no recipe for cart '%s'", nc_games[gi].cart);
-        return NEOCONV_ERR_RECIPE;
+        return LITHOGEN_ERR_RECIPE;
     }
 
     /* Split sets: automatically search "<parent>.zip" alongside the
@@ -328,7 +328,7 @@ neoconv_status neoconv_convert(const char *zip_path, const char *out_path,
     paths = (const char **)malloc(npaths * sizeof(*paths));
     if (!paths) {
         free(parent_zip);
-        return NEOCONV_ERR_NOMEM;
+        return LITHOGEN_ERR_NOMEM;
     }
     npaths = 0;
     paths[npaths++] = zip_path;
@@ -344,21 +344,21 @@ neoconv_status neoconv_convert(const char *zip_path, const char *out_path,
     free(parent_zip);
     free(bios_zip);
     if (!zs)
-        return NEOCONV_ERR_ZIP;
+        return LITHOGEN_ERR_ZIP;
 
-    st = (neoconv_status)nc_regions_build(&nc_games[gi], zs, &regions, opt, rep);
+    st = (lithogen_status)nc_regions_build(&nc_games[gi], zs, &regions, opt, rep);
     nc_zipset_close(zs);
-    if (st != NEOCONV_OK) {
+    if (st != LITHOGEN_OK) {
         nc_regions_free(&regions);
         return st;
     }
 
     if (!opt->dry_run)
-        st = (neoconv_status)nc_recipe_apply(nc_games[gi].cart, &regions,
+        st = (lithogen_status)nc_recipe_apply(nc_games[gi].cart, &regions,
                                              rep->errstr);
-    if (st == NEOCONV_OK && !opt->dry_run) {
+    if (st == LITHOGEN_OK && !opt->dry_run) {
         nc_apply_meta_sizes(&nc_games[gi], &regions, opt);
-        st = (neoconv_status)nc_neo_write(&nc_games[gi], &regions, opt,
+        st = (lithogen_status)nc_neo_write(&nc_games[gi], &regions, opt,
                                           out_path, &rep->ngh, rep->errstr);
     }
 

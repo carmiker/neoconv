@@ -1,10 +1,13 @@
-neoconv
--------
+lithogen
+--------
 MAME Neo Geo romset (.zip) to TerraOnion (.neo) converter, in ISO C99.
+
+lithogen: from lithogenesis, sediment consolidating into rock; the tool
+that forms what Geolith runs.
 
 Static decryption only: CMC42/CMC50 C/S/M1, SMA 68K, NEO-PCM2 (both variants),
 PVC, KOF98, the KOF2002 family, and bootleg decryption are applied at
-conversion time, mirroring the "decrypt_all()" sequence of the matching
+conversion time, mirroring the "decrypt_all()" sequence of the
 matching MAME cart device. Runtime protection (SMA banking/PRNG, PVC
 registers, game-specific protection/anti-piracy) is the .neo consumer's
 responsibility. In other words, this decrypts encrypted data but does not
@@ -19,26 +22,26 @@ Build
 
 Embedding (frontends)
 ---------------------
-The library API (include/neoconv.h) is frontend-agnostic ISO C99: no POSIX, no
+The library API (include/lithogen.h) is frontend-agnostic ISO C99: no POSIX, no
 output to stdio when a log callback is installed, and static string lifetimes
 for all database queries. The intended pattern for a GUI is: enumerate sets
-with neoconv_game_desc_get() to build the library view, validate zips with the
+with lithogen_game_desc_get() to build the library view, validate zips with the
 dry_run option, and convert on a worker thread with warnings routed through the
 log callback. Conversions must be serialized (the MAME-derived decryption code
 keeps translation-unit state); a single worker thread is the supported model.
-Initialize options with neoconv_options_init() - the struct records its size so
+Initialize options with lithogen_options_init() - the struct records its size so
 it can grow compatibly.
 
 Usage
 -----
-  neoconv mslug.zip                       # -> mslug.neo
-  neoconv -o out/ /path/to/romdir         # whole directory
-  neoconv -o out/ '/path/to/romdir/*.zip' # same, via (quoted) glob
-  neoconv -o out/ *.zip                   # shell-expanded batch
-  neoconv kof99h.zip                      # split clone: kof99.zip is
+  lithogen mslug.zip                       # -> mslug.neo
+  lithogen -o out/ /path/to/romdir         # whole directory
+  lithogen -o out/ '/path/to/romdir/*.zip' # same, via (quoted) glob
+  lithogen -o out/ *.zip                   # shell-expanded batch
+  lithogen kof99h.zip                      # split clone: kof99.zip is
                                           # found automatically beside it
-  neoconv --strict --set kof2002 a.zip -o kof2002.neo
-  neoconv --list
+  lithogen --strict --set kof2002 a.zip -o kof2002.neo
+  lithogen --list
 
 Inputs may be zip files, directories (every contained *.zip), or glob
 patterns (quoted, so the shell passes them through).  In directory or glob

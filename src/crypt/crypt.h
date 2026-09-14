@@ -1,8 +1,8 @@
 /* SPDX-License-Identifier: BSD-3-Clause
- * libneoconv - shared helpers for the crypto translation units.
+ * liblithogen - shared helpers for the crypto translation units.
  */
-#ifndef NEOCONV_CRYPT_H
-#define NEOCONV_CRYPT_H
+#ifndef LITHOGEN_CRYPT_H
+#define LITHOGEN_CRYPT_H
 
 #include <stdint.h>
 #include <stdarg.h>
@@ -37,13 +37,13 @@ static inline uint16_t nc_sum16(const uint8_t *data, size_t len)
 
 #include "crypt_protos.h"
 
-#endif /* NEOCONV_CRYPT_H */
+#endif /* LITHOGEN_CRYPT_H */
 #ifndef NC_BIT
 #define NC_BIT
 #define BIT(x,n) (((x) >> (n)) & 1u)
 #endif
 /* MAME BYTE_XOR_LE: byte-lane fixup for byte access into 16-bit regions.
- * libneoconv normalizes all 16-bit regions to the little-endian-host MAME
+ * liblithogen normalizes all 16-bit regions to the little-endian-host MAME
  * layout, where this macro is the identity. */
 #ifndef BYTE_XOR_LE
 #define BYTE_XOR_LE(a) (a)

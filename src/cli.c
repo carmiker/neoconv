@@ -1,9 +1,9 @@
 #define _POSIX_C_SOURCE 200809L
 /* SPDX-License-Identifier: BSD-3-Clause
- * neoconv - reference command line front end for libneoconv.
+ * lithogen - reference command line front end for liblithogen.
  *
  * Usage:
- *   neoconv [options] <romset.zip> [more.zip ...]
+ *   lithogen [options] <romset.zip> [more.zip ...]
  *
  * Each named zip is converted to <setname>.neo.  Additional zips given
  * with -p/--parent are searched for ROMs missing from the primary zip
@@ -18,7 +18,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "neoconv.h"
+#include "lithogen.h"
 
 /* --------- input collection: files, directories, and glob patterns ------ */
 
@@ -112,9 +112,9 @@ static int collect_input(inputs_t *in, const char *arg) {
 
 static void usage(void) {
     printf(
-"neoconv %s - MAME Neo Geo romset to TerraOnion .neo converter\n"
+"lithogen %s - MAME Neo Geo romset to TerraOnion .neo converter\n"
 "\n"
-"usage: neoconv [options] <romset.zip | directory | 'glob'> [...]\n"
+"usage: lithogen [options] <romset.zip | directory | 'glob'> [...]\n"
 "\n"
 "options:\n"
 "  -o, --output <path>     output file (single input) or directory,\n"
@@ -136,15 +136,15 @@ static void usage(void) {
 "Inputs may be zip files, directories (every contained *.zip is\n"
 "converted), or quoted glob patterns. In directory/glob mode, zips\n"
 "that are not known romsets (e.g. neogeo.zip) are skipped, not errors.\n"
-"  -h, --help              this text\n", NEOCONV_VERSION);
+"  -h, --help              this text\n", LITHOGEN_VERSION);
 }
 
 static int list_sets(void) {
-    size_t i, n = neoconv_game_count();
+    size_t i, n = lithogen_game_count();
     for (i = 0; i < n; i++) {
         const char *name, *parent, *full, *manu;
         unsigned year;
-        neoconv_game_info(i, &name, &parent, &full, &manu, &year);
+        lithogen_game_info(i, &name, &parent, &full, &manu, &year);
         printf("%-12s %-10s %u  %s\n", name, parent ? parent : "-", year, full);
     }
     printf("%zu sets\n", n);
@@ -152,14 +152,14 @@ static int list_sets(void) {
 }
 
 int main(int argc, char **argv) {
-    neoconv_options opt;
+    lithogen_options opt;
     const char *out = NULL;
     inputs_t in = { NULL, 0, 0, 0 };
     const char *aux[64];
     int i, failures = 0;
     size_t k;
 
-    neoconv_options_init(&opt);
+    lithogen_options_init(&opt);
     opt.aux_zips = aux;
 
     for (i = 1; i < argc; i++) {
@@ -241,8 +241,8 @@ int main(int argc, char **argv) {
 
     for (k = 0; k < in.n; k++) {
         char outpath[1024];
-        neoconv_report rep;
-        neoconv_status st;
+        lithogen_report rep;
+        lithogen_status st;
 
         const char *input = in.v[k];
         if (out && in.n == 1 && strlen(out) > 4 &&
@@ -270,17 +270,17 @@ int main(int argc, char **argv) {
                 snprintf(outpath, sizeof(outpath), "%s.neo", stem);
         }
 
-        st = neoconv_convert(input, outpath, &opt, &rep);
-        if (st == NEOCONV_OK) {
+        st = lithogen_convert(input, outpath, &opt, &rep);
+        if (st == LITHOGEN_OK) {
             printf("%s -> %s (NGH %03X)%s\n", input, outpath, rep.ngh,
                    rep.crc_mismatches ? " [CRC warnings]" : "");
         }
-        else if (st == NEOCONV_ERR_UNKNOWN_SET && in.batch) {
+        else if (st == LITHOGEN_ERR_UNKNOWN_SET && in.batch) {
             printf("%s: skipped (not a known romset)\n", input);
         }
         else {
             fprintf(stderr, "%s: %s: %s\n", input,
-                    neoconv_status_str(st), rep.errstr);
+                    lithogen_status_str(st), rep.errstr);
             failures++;
         }
     }
