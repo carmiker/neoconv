@@ -106,8 +106,13 @@ uint8_t *nc_zipset_read(nc_zipset *zs, const char *name, uint32_t crc,
                 mz_zip_archive_file_stat st;
                 if (!mz_zip_reader_file_stat(za, i, &st))
                     continue;
+                /* >=, not ==: expect_len is the FIRST load chunk, and a file
+                 * loaded as LOAD + CONTINUE (mslug 201-p1, 2 MB in two 1 MB
+                 * chunks) is longer than it.  Under == the CRC pass could never
+                 * match a renamed multi-chunk file, so a MAME 0.139 set whose
+                 * 201-p1.bin is byte-identical to 201-p1.p1 was "missing". */
                 if ((uint32_t)st.m_crc32 == crc &&
-                    (size_t)st.m_uncomp_size == expect_len)
+                    (size_t)st.m_uncomp_size >= expect_len)
                     return extract(za, i, out_len, out_crc);
             }
         }
